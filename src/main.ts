@@ -4,6 +4,7 @@ import './style.css';
 import { BODIES, SPACECRAFT, BodyDef } from './bodies';
 import { bodyState, orbitPath, trackState, Track, State, UNIT_KM, KM_PER_AU } from './ephemeris';
 import { SimClock } from './clock';
+import { STORIES, Story } from './stories';
 
 // ---------- Сущности ----------
 interface Entity {
@@ -165,14 +166,15 @@ function addStars() {
 // ---------- Камера: перелёт к объекту ----------
 let flight: { from: [number, number, number]; t0: number; dur: number; d0: number; d1: number } | null = null;
 
-function select(id: string) {
+function select(id: string, distanceKm?: number, withInfo = true) {
   const e = entities.get(id) ?? (id === 'home' ? null : undefined);
   if (e === undefined) return;
   const d0 = camera.position.length();
   focus = e;
-  const d1 = e ? Math.max((e.def.radiusKm / UNIT_KM) * (e.def.kind === 'star' ? 8 : 5), 1e-4) * (e.def.kind === 'spacecraft' ? 1e4 : 1) : 1700;
+  const d1 = distanceKm ? distanceKm / UNIT_KM
+    : e ? Math.max((e.def.radiusKm / UNIT_KM) * (e.def.kind === 'star' ? 8 : 5), 1e-4) * (e.def.kind === 'spacecraft' ? 1e4 : 1) : 1700;
   flight = { from: [...originKm], t0: performance.now(), dur: 2500, d0, d1 };
-  showInfo(e);
+  showInfo(withInfo ? e : null);
 }
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -301,8 +303,39 @@ search.onchange = () => {
   if (e) location.hash = `#/${e.def.id}`;
 };
 
+// ---------- Карточки событий и истории ----------
+const eventsEl = document.getElementById('events')!;
+const storyEl = document.getElementById('story')!;
+document.getElementById('event-cards')!.innerHTML = STORIES.map((s) =>
+  `<a class="card" href="#/story/${s.id}"><div><div class="card-title">${s.title}</div><div class="card-sub">${s.subtitle}</div></div><div class="card-icon">${s.icon}</div></a>`).join('');
+
+function playStory(story: Story, index: number) {
+  const step = story.steps[Math.min(Math.max(index, 0), story.steps.length - 1)];
+  const i = story.steps.indexOf(step);
+  clock.setTime(step.time === 'now' ? Date.now() : Date.parse(step.time));
+  clock.setRate(step.rate ?? 0);
+  select(step.focus, step.distanceKm, false);
+  const link = (k: number) => `#/story/${story.id}/${k}`;
+  storyEl.innerHTML = `
+    <div class="story-head"><span class="story-name">${story.title}</span><a class="close" href="#/home">✕</a></div>
+    <div class="story-progress">${story.steps.map((_, k) => `<a href="${link(k)}" class="${k === i ? 'on' : ''}"></a>`).join('')}</div>
+    <h2>${step.title}</h2>
+    <p>${step.text}</p>
+    <div class="story-nav">
+      ${i > 0 ? `<a href="${link(i - 1)}">← Назад</a>` : '<span></span>'}
+      <span class="story-count">${i + 1} / ${story.steps.length}</span>
+      ${i < story.steps.length - 1 ? `<a href="${link(i + 1)}">Далее →</a>` : `<a href="#/home">Готово</a>`}
+    </div>`;
+}
+
 function route() {
-  const id = location.hash.replace(/^#\/?/, '').split('?')[0] || 'home';
+  const parts = location.hash.replace(/^#\/?/, '').split('?')[0].split('/');
+  const id = parts[0] || 'home';
+  const story = id === 'story' ? STORIES.find((s) => s.id === parts[1]) : undefined;
+  eventsEl.classList.toggle('hidden', id !== 'home');
+  storyEl.classList.toggle('hidden', !story);
+  if (story) return playStory(story, +(parts[2] ?? 0));
+  if (clock.rate === 0) clock.goLive(); // вышли из истории на остановленном кадре
   select(id);
 }
 addEventListener('hashchange', route);

@@ -13,6 +13,7 @@ export class SimClock {
     this.last = now;
   }
   setRate(r: number) { this.rate = r; this.paused = false; }
+  setTime(ms: number) { this.simMs = ms; }
   togglePause() { this.paused = !this.paused; }
   goLive() { this.simMs = Date.now(); this.rate = 1; this.paused = false; }
   isLive() { return !this.paused && this.rate === 1 && Math.abs(this.simMs - Date.now()) < 5000; }
