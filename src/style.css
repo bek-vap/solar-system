@@ -1,0 +1,49 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: #fff; font-family: Montserrat, system-ui, sans-serif; }
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+button { font: inherit; cursor: pointer; }
+
+#loader { position: fixed; inset: 0; z-index: 100; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; transition: opacity .8s; }
+#loader.done { opacity: 0; pointer-events: none; }
+#loader .logo { font-size: 56px; position: absolute; top: 40px; }
+.loading-text { letter-spacing: .3em; font-size: 14px; }
+.bar { width: 160px; height: 2px; background: #333; }
+.fill { width: 5%; height: 100%; background: #fff; transition: width .4s; }
+
+#header { position: fixed; top: 0; left: 0; right: 0; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; pointer-events: none; }
+#header > * { pointer-events: auto; }
+.brand { color: #fff; text-decoration: none; letter-spacing: .08em; font-size: 14px; display: flex; gap: 10px; align-items: center; }
+.brand .logo { font-size: 26px; }
+#menu-btn { background: none; border: 0; color: #fff; font-size: 22px; }
+#menu { position: fixed; top: 56px; right: 16px; z-index: 10; background: rgba(20,20,20,.92); padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; border: 1px solid #333; }
+#menu input[type=text], #search { background: #111; color: #fff; border: 1px solid #444; padding: 6px 8px; }
+.hidden { display: none !important; }
+
+#labels { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+.label { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; display: flex; align-items: center; gap: 8px; margin: -7px 0 0 -7px; white-space: nowrap; }
+.label .marker { width: 14px; height: 14px; border: 1.5px solid; border-radius: 50%; }
+.label .name { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; text-shadow: 0 0 4px #000; }
+.label.planet .name, .label.star .name { font-size: 13px; font-weight: 600; }
+.label.moon .name, .label.spacecraft .name { color: #aab; text-transform: none; letter-spacing: .02em; }
+.label.moon .marker { width: 8px; height: 8px; margin: 3px; }
+.label.spacecraft .marker { border-radius: 0; width: 10px; height: 10px; transform: rotate(45deg); margin: 2px; }
+.label:hover .name, .label.active .name { color: #f5b942; }
+
+#info { position: fixed; top: 70px; right: 20px; width: 340px; max-height: calc(100% - 160px); overflow: auto; z-index: 8; background: rgba(12,12,12,.88); border: 1px solid #2a2a2a; padding: 20px; }
+#info h1 { margin: 0; font-weight: 300; font-size: 30px; }
+#info .kind { color: #f5b942; letter-spacing: .25em; font-size: 11px; text-transform: uppercase; margin: 6px 0 14px; }
+#info p { font-size: 13px; line-height: 1.5; color: #ccc; }
+#info table { width: 100%; font-size: 12px; border-collapse: collapse; }
+#info td { padding: 6px 0; border-top: 1px solid #222; }
+#info td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+#info .close { position: absolute; top: 12px; right: 12px; background: none; border: 0; color: #888; font-size: 16px; }
+
+#timeline { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,.85)); font-size: 12px; }
+#timeline button { background: rgba(255,255,255,.06); border: 1px solid #333; color: #ddd; padding: 6px 10px; font-size: 11px; letter-spacing: .08em; }
+#timeline button:hover { border-color: #f5b942; color: #fff; }
+#date { font-variant-numeric: tabular-nums; margin: 0 10px; }
+#rate { color: #f5b942; letter-spacing: .15em; min-width: 90px; }
+
+@media (max-width: 700px) {
+  #info { left: 10px; right: 10px; width: auto; top: auto; bottom: 110px; max-height: 40%; }
+}

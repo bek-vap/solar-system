@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="loader"><div class="logo">◎</div><div class="loading-text">LOADING</div><div class="bar"><div class="fill"></div></div></div>
+  <canvas id="scene"></canvas>
+  <div id="labels"></div>
+  <header id="header">
+    <a href="#/home" class="brand"><span class="logo">◎</span> SOLAR EXPLORER</a>
+    <button id="menu-btn" aria-label="Menu">☰</button>
+  </header>
+  <nav id="menu" class="hidden">
+    <label><input type="checkbox" id="opt-orbits" checked /> Орбиты</label>
+    <label><input type="checkbox" id="opt-labels" checked /> Подписи</label>
+    <label><input type="checkbox" id="opt-flood" /> Заливающий свет (flood)</label>
+    <input id="search" placeholder="Поиск объекта..." list="search-list" />
+    <datalist id="search-list"></datalist>
+  </nav>
+  <aside id="info" class="hidden"></aside>
+  <footer id="timeline">
+    <button data-rate="-31557600">⏪ год/с</button>
+    <button data-rate="-86400">◀ день/с</button>
+    <button id="pause">⏸</button>
+    <button data-rate="1">REAL RATE</button>
+    <button data-rate="3600">час/с</button>
+    <button data-rate="86400">день/с ▶</button>
+    <button data-rate="2629800">мес/с</button>
+    <button data-rate="31557600">год/с ⏩</button>
+    <span id="date"></span>
+    <span id="rate"></span>
+    <button id="live">LIVE</button>
+  </footer>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
